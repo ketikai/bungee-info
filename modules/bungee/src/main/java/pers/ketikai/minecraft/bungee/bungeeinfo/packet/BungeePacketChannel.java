@@ -22,6 +22,7 @@ import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import pers.ketikai.minecraft.bungee.bungeeinfo.packet.event.BungeePacketReceivedEvent;
@@ -55,6 +56,10 @@ public final class BungeePacketChannel implements PacketChannelAdapter {
             Object sender = context.get("sender");
             if (sender instanceof ProxiedPlayer) {
                 ((ProxiedPlayer) sender).getReconnectServer().sendData(name, packet, true);
+            } else if (sender instanceof Server) {
+                ((Server) sender).getInfo().sendData(name, packet, true);
+            } else if (sender instanceof ServerInfo) {
+                ((ServerInfo) sender).sendData(name, packet, true);
             } else {
                 for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
                     info.sendData(name, packet, true);
